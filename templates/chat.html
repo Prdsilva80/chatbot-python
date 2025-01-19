@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Chat{% endblock %}
+{% block content %}
+<h2>Chatbot</h2>
+<div id="chat-box" class="chat-box"></div>
+<form id="chat-form">
+    <input type="text" id="user-message" placeholder="Digite sua mensagem..." />
+    <button type="submit">Enviar</button>
+</form>
+
+<script>
+    const chatForm = document.getElementById('chat-form');
+    const chatBox = document.getElementById('chat-box');
+
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const userMessage = document.getElementById('user-message').value;
+        if (!userMessage) return;
+
+        // Exibe mensagem do usuário na tela
+        chatBox.innerHTML += `<div class="user-message">${userMessage}</div>`;
+
+        // Envia ao servidor
+        fetch("/chat_api", {
+            method: "POST",
+            body: new URLSearchParams({ message: userMessage }),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.error) {
+                    chatBox.innerHTML += `<div class="error-message">${data.error}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="bot-message">${data.response}</div>`;
+                }
+                document.getElementById('user-message').value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+    });
+</script>
+{% endblock %}

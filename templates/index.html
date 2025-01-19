@@ -1,44 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot com Flask</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="chat-container">
-        <h1>Chatbot</h1>
-        <div id="chat-box" class="chat-box"></div>
-        <form id="chat-form">
-            <input type="text" id="user-message" placeholder="Escreva sua mensagem...">
-            <button type="submit">Enviar</button>
-        </form>
-    </div>
-
-    <script>
-        document.getElementById('chat-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const userMessage = document.getElementById('user-message').value;
-            if (!userMessage) return;
-
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<div class="user-message">${userMessage}</div>`;
-
-            // Enviar a mensagem ao servidor
-            fetch("/chat", {
-                method: "POST",
-                body: new URLSearchParams({ message: userMessage }),
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
-            .then(response => response.json())
-            .then(data => {
-                chatBox.innerHTML += `<div class="bot-message">${data.response}</div>`;
-                document.getElementById('user-message').value = "";
-                chatBox.scrollTop = chatBox.scrollHeight; // Rolagem automática para o fim
-            });
-        });
-    </script>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Bem-vindo ao Chatbot!</h1>
+<p>Para usar o chatbot, faça <a href="{{ url_for('login') }}">login</a> ou <a
+        href="{{ url_for('register') }}">cadastre-se</a>.</p>
+{% endblock %}
